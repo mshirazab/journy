@@ -1,0 +1,15 @@
+{
+  "short_name": "Journy",
+  "name": "Take a journy through life",
+  "icons": [
+    {
+      "src": "image.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#e35557",
+  "background_color": "#ffffff"
+}
