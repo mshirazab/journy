@@ -11,7 +11,7 @@ module.exports = (app) => {
     res.send(response);
   });
   app.get('/auth/user', (req, res) => {
-    if (req.user) res.send({ status: true, message: req.user });
+    if (req.user) res.send({ success: true, message: req.user });
     else res.status(401).send({ success: false, message: 'Not logged in' });
   });
   app.post('/auth/login', (req, res, next) => {
@@ -20,7 +20,7 @@ module.exports = (app) => {
         return next(err);
       }
       if (!user) {
-        return res.send({ success: false, message: 'authentication failed' });
+        return res.send({ success: false, message: 'Username or password is wrong!' });
       }
       return req.login(user, (loginErr) => {
         if (loginErr) {

@@ -26,12 +26,12 @@ const create = async (username, password) => {
     const hashedPassword = bcrypt.hashSync(password, 10);
     fs.appendFileSync(fileName, `${username}\t${hashedPassword}\n`);
     return {
-      message: 'User created successfully',
+      message: 'User created successfully, please login!',
       success: true,
     };
   }
   return {
-    message: 'Username already taken',
+    message: 'Username already taken!',
     success: false,
   };
 };

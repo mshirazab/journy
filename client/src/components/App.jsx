@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import Loadable from 'react-loadable';
+import { observer, inject } from 'mobx-react';
 
-import { message } from 'antd';
 import Layout from './Layout';
 import Loading from './Loading';
 
@@ -13,6 +13,10 @@ const AsyncSignIn = Loadable({
 });
 const AsyncSignUp = Loadable({
   loader: () => import('./SignUp'),
+  loading: Loading,
+});
+const AsyncDashboard = Loadable({
+  loader: () => import('./Dashboard'),
   loading: Loading,
 });
 
@@ -35,36 +39,49 @@ const styleProps = {
     },
   },
 };
+
+@inject('profileStore')
+@observer
 class App extends Component {
-  componentWillReceiveProps(props) {
-    if (props.error && this.props.error !== props.error) {
-      message.error(props.error);
-    }
-  }
+  static propTypes = {
+    profileStore: PropTypes.shape({
+      getUser: PropTypes.func,
+      username: PropTypes.string,
+    }),
+  };
+  static defaultProps = {
+    profileStore: {},
+  };
   render() {
+    let routes = <Loading />;
+    this.props.profileStore.getUser();
+    if (!this.props.profileStore.username) {
+      routes = (
+        <Switch>
+          <Route
+            path="/login"
+            render={props => <AsyncSignIn {...props} styleProps={styleProps} />}
+          />
+          <Route
+            path="/signup"
+            render={props => <AsyncSignUp {...props} styleProps={styleProps} />}
+          />
+          <Redirect to="/login" />
+        </Switch>
+      );
+    } else {
+      routes = (
+        <Switch>
+          <Route path="/" render={props => <AsyncDashboard {...props} styleProps={styleProps} />} />
+          <Redirect to="/" />
+        </Switch>
+      );
+    }
     return (
       <Layout styleProps={styleProps}>
-        <BrowserRouter>
-          <Switch>
-            <Route
-              path="/login"
-              render={props => <AsyncSignIn {...props} styleProps={styleProps} />}
-            />
-            <Route
-              path="/signup"
-              render={props => <AsyncSignUp {...props} styleProps={styleProps} />}
-            />
-            <Redirect to="/login" />
-          </Switch>
-        </BrowserRouter>
+        <BrowserRouter>{routes}</BrowserRouter>
       </Layout>
     );
   }
 }
-App.propTypes = {
-  error: PropTypes.string,
-};
-App.defaultProps = {
-  error: '',
-};
 export default App;

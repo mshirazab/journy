@@ -1,1 +1,1 @@
-NODE_ENV=dev nodemon index.js
+NODE_ENV=dev nodemon index.js --ignore 'client/'

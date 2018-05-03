@@ -1,11 +1,33 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { inject } from 'mobx-react';
 
-import { Row, Col, Card, Form, Input, Button } from 'antd';
+import { Row, Col, Card, Form, Input, Button, message } from 'antd';
 
 const FormItem = Form.Item;
+
+@inject('profileStore')
 class SignUp extends Component {
+  static propTypes = {
+    styleProps: PropTypes.shape({
+      row: PropTypes.object,
+      small: PropTypes.object,
+    }),
+    form: PropTypes.shape({
+      getFieldDecorator: PropTypes.func,
+      validateFields: PropTypes.func,
+    }),
+    profileStore: PropTypes.shape({
+      signup: PropTypes.func,
+    }),
+  };
+  static defaultProps = {
+    styleProps: {},
+    form: {},
+    profileStore: {},
+  };
+
   state = {
     confirmDirty: false,
   };
@@ -15,7 +37,15 @@ class SignUp extends Component {
     form.validateFields((err, values) => {
       if (!err) {
         // TODO: Handle Signup when server is complete
+
         console.log(values);
+        this.props.profileStore.signup(values.userName, values.password).then((response) => {
+          if (response.success) {
+            message.success(response.message);
+          } else {
+            message.error(response.message);
+          }
+        });
       }
     });
   };
@@ -64,13 +94,11 @@ class SignUp extends Component {
                     { required: true, message: 'Please confirm your password!' },
                     { validator: this.compareToFirstPassword },
                   ],
-                })(
-                  <Input
-                    type="password"
-                    placeholder="Confirm Password"
-                    onBlur={this.handleConfirmBlur}
-                  />,
-                )}
+                })(<Input
+                  type="password"
+                  placeholder="Confirm Password"
+                  onBlur={this.handleConfirmBlur}
+                />)}
               </FormItem>
               <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
                 Register
@@ -83,19 +111,4 @@ class SignUp extends Component {
     );
   }
 }
-SignUp.propTypes = {
-  styleProps: PropTypes.shape({
-    row: PropTypes.object,
-    small: PropTypes.object,
-  }),
-  form: PropTypes.shape({
-    getFieldDecorator: PropTypes.func,
-    validateFields: PropTypes.func,
-  }),
-};
-SignUp.defaultProps = {
-  styleProps: {},
-  form: {},
-};
-
 export default Form.create()(SignUp);
