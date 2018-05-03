@@ -32,6 +32,7 @@
     "server": "bash ./scripts/server.sh",
     "client": "bash ./scripts/client.sh",
     "test": "bash ./scripts/test.sh",
-    "dev": "concurrently \"yarn client\" \"yarn server\""
+    "dev": "concurrently \"yarn client\" \"yarn server\"",
+    "setup": "yarn install && yarn install --cwd ./client"
   }
 }
