@@ -36,9 +36,6 @@ class SignUp extends Component {
     e.preventDefault();
     form.validateFields((err, values) => {
       if (!err) {
-        // TODO: Handle Signup when server is complete
-
-        console.log(values);
         this.props.profileStore.signup(values.userName, values.password).then((response) => {
           if (response.success) {
             message.success(response.message);
