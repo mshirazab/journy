@@ -7,10 +7,10 @@ import { Layout, Row, Col, Button } from 'antd';
 const { Header, Content } = Layout;
 const AppLayout = ({ styleProps, children, profileStore }) => (
   <Layout>
-    <Header>
+    <Header style={{ paddingRight: 16 }}>
       <Row {...styleProps.row} justify="space-between">
         <Col>
-          <h2>Journy</h2>
+          <h2 style={{ color: '#fff' }}>Journy</h2>
         </Col>
         {profileStore.username ? (
           <Col>

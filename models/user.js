@@ -46,7 +46,6 @@ const find = async (username) => {
   const foundUser = users.find(user => user.username === username);
   return foundUser;
 };
-
 module.exports = {
   create,
   find,

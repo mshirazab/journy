@@ -27,11 +27,13 @@ const styleProps = {
   },
   big: {
     span: 24,
-    md: { span: 12 },
+    lg: { span: 12 },
+    md: { span: 18 },
   },
   small: {
     span: 24,
-    md: { span: 8 },
+    lg: { span: 8 },
+    md: { span: 12 },
   },
   content: {
     style: {
