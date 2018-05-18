@@ -9,7 +9,9 @@ const secondaryFileName = './data/journal-seconary.txt';
 let indexData = {};
 let secondaryData = {};
 let isDeleting = false;
-
+/**
+ * reads  from index file and stores it in indexData variable when the server starts
+ */
 const readIndex = () => {
   fs.ensureFileSync(indexFileName);
   const fileContents = fs.readFileSync(indexFileName);
@@ -26,6 +28,9 @@ const readIndex = () => {
       return acc;
     }, {});
 };
+/**
+ * write whatever is there in indexData into the index file.
+ */
 const writeIndex = () => {
   if (!isDeleting) {
     fs.ensureFileSync(indexFileName);
@@ -37,6 +42,9 @@ const writeIndex = () => {
   }
 };
 
+/**
+ * Reads  from secondary index file and stores it in secondaryData variable when the server starts.
+ */
 const readSecondary = () => {
   fs.ensureFileSync(secondaryFileName);
   const fileContents = fs.readFileSync(secondaryFileName);
@@ -50,6 +58,10 @@ const readSecondary = () => {
       return acc;
     }, {});
 };
+
+/**
+ * Write whatever is there in secondaryData into the secondary index file.
+ */
 const writeSecondary = () => {
   fs.ensureFileSync(secondaryFileName);
   const fileContents = Object.keys(secondaryData).reduce(
@@ -58,13 +70,24 @@ const writeSecondary = () => {
   );
   fs.writeFileSync(secondaryFileName, fileContents);
 };
+/**
+ * This basically save indexData and secondaryData into their respective files
+ * every so seconds.
+ */
 const repeatSetup = async () => {
   console.log('Writing secondary index into file');
   writeIndex();
   writeSecondary();
   setTimeout(repeatSetup, 5000);
 };
-
+/**
+ * This adds a journal into a file for a given user given its heading and description
+ * @param {Object} data
+ * @param {string} data.username
+ * @param {string} data.entry
+ * @param {string} data.heading
+ * @returns {Object}
+ */
 const add = ({ username, entry, heading }) => {
   if (!username) return { success: false, message: 'Error while adding journal!' };
   let response;
@@ -87,6 +110,13 @@ const add = ({ username, entry, heading }) => {
   }
   return response;
 };
+/**
+ * This deletes a journal from a file for a given username given the id of the journal.
+ * @param {Object} data
+ * @param {string} data.username
+ * @param {string} data.id
+ * @returns {Object}
+ */
 const del = ({ username, id }) => {
   if (!username) return { success: false, message: 'Error while deleting journal!' };
   if (!(id in indexData)) return { success: false, message: 'Error while deleting journal!' };
@@ -117,6 +147,13 @@ const del = ({ username, id }) => {
   isDeleting = false;
   return response;
 };
+/**
+ * This reads all journal of a given user.
+ * @param {Object} data
+ * @param {string} data.username
+ * @param {string} data.id
+ * @returns {Object}
+ */
 const getAll = async ({ username }) => {
   const message = [];
   for (const id of secondaryData[username]) {

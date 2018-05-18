@@ -2,6 +2,10 @@ const fs = require('fs-extra');
 const bcrypt = require('bcrypt');
 
 const fileName = './data/user.txt';
+/**
+ * This gets all users from the file and returns it
+ * @returns users and their hashed passwords
+ */
 const getUsers = async () => {
   fs.ensureFileSync(fileName);
   const fileContents = await fs.readFile(fileName);
